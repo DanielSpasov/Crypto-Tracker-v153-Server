@@ -4,17 +4,17 @@ const User = require('../models/User')
 
 
 
-const register = async (req, res) => {
+const signUp = async (req, res) => {
     try {
 
-        let { email, password, rePassword } = req.body
+        let { email, password, rePassword, username } = req.body
         
         if (!email) return res.status(400).json({ message: 'Email is required' })
         if (!password) return res.status(400).json({ message: 'Password is required' })
         if (password.length < 6) return res.status(400).json({ message: 'Password must be at least 6 characters long.' })
         if (password !== rePassword) return res.status(400).json({ message: 'Passwords doesn\'t match' })
 
-        const username = email.split('@')[0]
+        username = username ? username : email.split('@')[0]
         
         const existingUser = await User.findOne({ email: email })
         if (existingUser) return res.status(400).json({ message: 'A user with this email is already registered.' })
@@ -45,5 +45,5 @@ const getAll = async (req, res) => {
 module.exports = {
     getOne,
     getAll,
-    register
+    signUp
 }

@@ -4,7 +4,7 @@ const userService = require('../services/userService')
 
 
 
-router.post('/register', (req, res) => userService.register(req, res))
+router.post('/sign-up', (req, res) => userService.signUp(req, res))
 
 router.get('/getOne', (req, res) => userService.getOne(req, res))
 router.get('/getAll', (req, res) => userService.getAll(req, res))
