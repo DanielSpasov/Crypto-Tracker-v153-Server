@@ -51,21 +51,35 @@ const signIn = async (req, res) => {
     } catch (err) { res.status(500).json({ message: err.message }) }
 }
 
-const getOne = async (req, res) => {
-    let user = await User.findOne({ username: 'ShadyGotRabies' })
-    res.json(user)
+const tokenIsValid = async (req, res) => {
+    try {
+
+        const token = req.header('x-auth-token')
+        if (!token) return res.json(false)
+
+        const verified = jwt.verify(token, process.env.JWT_SECRET)
+        if (!verified) return res.json(false)
+
+        const user = await User.findById(verified.id)
+        if (!user) return res.json(false)
+
+        return res.json({ isAuth: true, token, _id: user._id })
+
+    } catch (err) { res.status(500).json({ message: err.message }) }
 }
 
-const getAll = async (req, res) => {
-    let user = await User.find({})
-    res.json(user)
+const getOne = async (req, res) => {
+    try {
+        let user = await User.findById(req.params.id)
+        res.json({ email: user.email, username: user.username, id: user._id })
+    } catch (err) { res.status(500).json({ message: err.message }) }
 }
 
 
 
 module.exports = {
-    getOne,
-    getAll,
     signUp,
-    signIn
+    signIn,
+    tokenIsValid,
+    getOne
 }
