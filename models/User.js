@@ -15,6 +15,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         unique: true,
     },
+    watchlist: {
+        type: Array,
+        default: []
+    }
 })
 
 module.exports = mongoose.model('User', userSchema)
