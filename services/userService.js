@@ -46,7 +46,7 @@ const signIn = async (req, res) => {
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET)
 
-        res.json({ email: user.email, username: user.username, token: token })
+        res.json({ token: token, _id: user._id })
 
     } catch (err) { res.status(500).json({ message: err.message }) }
 }
@@ -55,7 +55,7 @@ const tokenIsValid = async (req, res) => {
     try {
 
         const token = req.header('x-auth-token')
-        if (!token) return res.json(false)
+        if (!token) return res.json({ isAuth: false })
 
         const verified = jwt.verify(token, process.env.JWT_SECRET)
         if (!verified) return res.json(false)
