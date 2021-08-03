@@ -71,7 +71,7 @@ const tokenIsValid = async (req, res) => {
 const getOne = async (req, res) => {
     try {
         let user = await User.findById(req.params.id)
-        res.json({ email: user.email, username: user.username, id: user._id })
+        res.json({ email: user.email, username: user.username, _id: user._id, watchlist: user.watchlist })
     } catch (err) { res.status(500).json({ message: err.message }) }
 }
 
