@@ -70,8 +70,12 @@ const validateToken = async (req, res) => {
 
 const getOne = async (req, res) => {
     try {
+
+        if (!req.params.id) return res.stats(401).json({ message: 'Invalid user ID' })
+
         let user = await User.findById(req.params.id)
         res.json({ email: user.email, username: user.username, _id: user._id, watchlist: user.watchlist })
+
     } catch (err) { res.status(500).json({ message: err.message }) }
 }
 

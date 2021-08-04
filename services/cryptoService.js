@@ -39,6 +39,7 @@ const editWatchlist = async (req, res) => {
 const getWatchlistCryptos = async (req, res) => {
     try {
 
+        if (!req.query.userID) return res.status(401).json({ message: 'Invalid user ID' })
         let user = await User.findById(req.query.userID)
 
         let watchlistData = await axios
