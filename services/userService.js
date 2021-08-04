@@ -51,11 +51,11 @@ const signIn = async (req, res) => {
     } catch (err) { res.status(500).json({ message: err.message }) }
 }
 
-const tokenIsValid = async (req, res) => {
+const validateToken = async (req, res) => {
     try {
 
         const token = req.header('x-auth-token')
-        if (!token) return res.json({ isAuth: false })
+        if (!token) return res.json(false)
 
         const verified = jwt.verify(token, process.env.JWT_SECRET)
         if (!verified) return res.json(false)
@@ -63,7 +63,7 @@ const tokenIsValid = async (req, res) => {
         const user = await User.findById(verified.id)
         if (!user) return res.json(false)
 
-        return res.json({ isAuth: true, token, _id: user._id })
+        return res.json(true)
 
     } catch (err) { res.status(500).json({ message: err.message }) }
 }
@@ -78,8 +78,8 @@ const getOne = async (req, res) => {
 
 
 module.exports = {
+    getOne,
     signUp,
     signIn,
-    tokenIsValid,
-    getOne
+    validateToken,
 }
