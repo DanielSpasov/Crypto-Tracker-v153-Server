@@ -5,9 +5,13 @@ const cryptoService = require('../services/cryptoService')
 
 
 router.get('/getOne', (req, res) => cryptoService.getOne(req, res))
-router.get('/getTop100', (req, res) => cryptoService.getTop100(req, res))
-router.get('/getCryptos', (req, res) => cryptoService.getCryptos(req, res))
-router.get('/getWatchlistCryptos', (req, res) => cryptoService.getWatchlistCryptos(req, res))
+
+router.get('/getLatest', (req, res) => cryptoService.getLatest(req, res))
+router.get('/getWatchlist', (req, res) => cryptoService.getWatchlist(req, res))
+
+router.get('/searchLatest', (req, res) => cryptoService.searchLatest(req, res))
+router.get('/searchWatchlist', (req, res) => cryptoService.searchWatchlist(req, res))
+
 
 router.post('/editWatchlist', (req, res) => cryptoService.editWatchlist(req, res))
 

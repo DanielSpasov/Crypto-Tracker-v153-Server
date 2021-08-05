@@ -11,7 +11,7 @@ const getOne = async (req, res) => {
     res.json(cryptoData.data.data)
 }
 
-const getTop100 = async (req, res) => {
+const getLatest = async (req, res) => {
     let cryptoData = await axios.get(`https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest`, {
         headers: { 'X-CMC_PRO_API_KEY': '9022ea0d-dc6b-4fb8-bb12-30c8ff5dd270' }
     })
@@ -36,7 +36,7 @@ const editWatchlist = async (req, res) => {
     } catch (err) { res.status(500).json({ message: err.message }) }
 }
 
-const getWatchlistCryptos = async (req, res) => {
+const getWatchlist = async (req, res) => {
     try {
 
         if (!req.query.userID) return res.status(401).json({ message: 'Invalid user ID' })
@@ -59,7 +59,7 @@ const getWatchlistCryptos = async (req, res) => {
     } catch (err) { res.status(500).json({ message: err.message }) }
 }
 
-const getCryptos = async (req, res) => {
+const searchLatest = async (req, res) => {
     try {
 
         req.query.cryptos = req.query.cryptos.split(',')
@@ -80,18 +80,47 @@ const getCryptos = async (req, res) => {
 
         res.json(output)
 
-    } catch (err) {
-        if (err.message === 'Request failed with status code 400') res.status(404).json({ message: 'Cryptocurrency not found' })
-        else res.status(500).json({ message: err.message })
-    }
+    } catch (err) { res.status(500).json({ message: err.message }) }
+}
+
+const searchWatchlist = async (req, res) => {
+    try {
+
+        let user = await User.findById(req.query.userID)
+
+        req.query.cryptos = req.query.cryptos.split(',')
+        let cryptos = []
+        for (let c of req.query.cryptos) {
+            cryptos.push(c.trim().toUpperCase())
+            if (!user.watchlist.includes(c.trim().toUpperCase())) {
+                return res
+                    .status(404)
+                    .json({ message: `Cryptocurrency not found: ${c.toUpperCase()}` })
+            }
+        }
+        cryptos = cryptos.join(',')
+
+        let cryptoData = await axios.get(`https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=${cryptos}`, {
+            headers: { 'X-CMC_PRO_API_KEY': '9022ea0d-dc6b-4fb8-bb12-30c8ff5dd270' }
+        })
+
+        let output = []
+        for (let key of Object.keys(cryptoData.data.data)) {
+            output.push(cryptoData.data.data[key])
+        }
+
+        res.json(output)
+
+    } catch (err) { res.status(500).json({ message: err.message }) }
 }
 
 
 
 module.exports = {
     getOne,
-    getTop100,
-    editWatchlist,
-    getWatchlistCryptos,
-    getCryptos
+    getLatest,
+    getWatchlist,
+    searchLatest,
+    searchWatchlist,
+    editWatchlist
 }
