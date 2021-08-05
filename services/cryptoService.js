@@ -59,11 +59,39 @@ const getWatchlistCryptos = async (req, res) => {
     } catch (err) { res.status(500).json({ message: err.message }) }
 }
 
+const getCryptos = async (req, res) => {
+    try {
+
+        req.query.cryptos = req.query.cryptos.split(',')
+        let cryptos = []
+        for (let c of req.query.cryptos) {
+            cryptos.push(c.trim().toLowerCase())
+        }
+        cryptos = cryptos.join(',')
+
+        let cryptoData = await axios.get(`https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=${cryptos}`, {
+            headers: { 'X-CMC_PRO_API_KEY': '9022ea0d-dc6b-4fb8-bb12-30c8ff5dd270' }
+        })
+
+        let output = []
+        for (let key of Object.keys(cryptoData.data.data)) {
+            output.push(cryptoData.data.data[key])
+        }
+
+        res.json(output)
+
+    } catch (err) {
+        if (err.message === 'Request failed with status code 400') res.status(404).json({ message: 'Cryptocurrency not found' })
+        else res.status(500).json({ message: err.message })
+    }
+}
+
 
 
 module.exports = {
     getOne,
     getTop100,
     editWatchlist,
-    getWatchlistCryptos
+    getWatchlistCryptos,
+    getCryptos
 }
