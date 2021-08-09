@@ -5,11 +5,12 @@ const Article = require('../models/Article')
 const createArticle = async (req, res) => {
     try {
 
-        const { title, content, userID } = req.body
+        const { title, content, image, userID } = req.body
 
         let article = new Article({
             title,
             content,
+            image,
             creator: userID,
             dateCreated: new Date()
         })

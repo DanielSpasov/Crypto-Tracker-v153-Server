@@ -1,9 +1,5 @@
 const mongoose = require('mongoose')
 
-const { User } = require('./User')
-
-
-
 const articleSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -17,6 +13,7 @@ const articleSchema = new mongoose.Schema({
     },
     image: {
         type: String,
+        required: true,
     },
     creator: {
         type: mongoose.Types.ObjectId,
