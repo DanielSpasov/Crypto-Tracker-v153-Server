@@ -4,21 +4,21 @@ const User = require('../models/User')
 
 
 
-const getOne = async(req, res) => {
+const getOne = async (req, res) => {
     let cryptoData = await axios.get(`https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=${req.query.crypto}`, {
         headers: { 'X-CMC_PRO_API_KEY': process.env.API_KEY }
     })
     res.json(cryptoData.data.data)
 }
 
-const getLatest = async(req, res) => {
+const getLatest = async (req, res) => {
     let cryptoData = await axios.get(`https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest`, {
         headers: { 'X-CMC_PRO_API_KEY': process.env.API_KEY }
     })
     res.json(cryptoData.data.data)
 }
 
-const editWatchlist = async(req, res) => {
+const editWatchlist = async (req, res) => {
     try {
 
         let user = await User.findById(req.body.userID)
@@ -36,7 +36,7 @@ const editWatchlist = async(req, res) => {
     } catch (err) { res.status(500).json({ message: err.message }) }
 }
 
-const getWatchlist = async(req, res) => {
+const getWatchlist = async (req, res) => {
     try {
 
         if (!req.query.userID) return res.status(401).json({ message: 'Invalid user ID' })
@@ -59,7 +59,7 @@ const getWatchlist = async(req, res) => {
     } catch (err) { res.status(500).json({ message: err.message }) }
 }
 
-const searchLatest = async(req, res) => {
+const searchLatest = async (req, res) => {
     try {
 
         req.query.cryptos = req.query.cryptos.split(',')
@@ -80,10 +80,17 @@ const searchLatest = async(req, res) => {
 
         res.json(output)
 
-    } catch (err) { res.status(500).json({ message: err.message }) }
+    } catch (err) {
+        if (err.message === 'Request failed with status code 400') {
+            let symbol = err.config.url.split('symbol=')[1].toUpperCase()
+            res.status(404).json({ message: `Cryptocurrency not found: ${symbol}` })
+        } else {
+            res.status(500).json({ message: err.message })
+        }
+    }
 }
 
-const searchWatchlist = async(req, res) => {
+const searchWatchlist = async (req, res) => {
     try {
 
         let user = await User.findById(req.query.userID)
