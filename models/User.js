@@ -18,7 +18,12 @@ const userSchema = new mongoose.Schema({
     watchlist: {
         type: Array,
         default: []
-    }
+    },
+    createdArticles: [{
+        type: mongoose.Types.ObjectId,
+        ref: 'Article',
+        default: []
+    }]
 })
 
 module.exports = mongoose.model('User', userSchema)

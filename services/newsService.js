@@ -1,4 +1,5 @@
 const Article = require('../models/Article')
+const User = require('../models/User')
 
 
 
@@ -16,6 +17,10 @@ const createArticle = async (req, res) => {
         })
         article.save()
 
+        let user = await User.findById(userID)
+        user.createdArticles.push(article._id)
+        user.save()
+
         res.json({ message: 'Article Created' })
 
     } catch (err) { res.status(500).json({ message: err.message }) }
@@ -24,7 +29,9 @@ const createArticle = async (req, res) => {
 const getLatest = async (req, res) => {
     try {
 
-        let latestArticlesRes = await Article.find({}).populate('creator', 'username')
+        let latestArticlesRes = await Article
+            .find({})
+            .populate('creator', 'username')
 
         res.json(latestArticlesRes)
 
