@@ -16,11 +16,24 @@ const createArticle = async (req, res) => {
         })
         article.save()
 
+        res.json({ message: 'Article Created' })
+
+    } catch (err) { res.status(500).json({ message: err.message }) }
+}
+
+const getLatest = async (req, res) => {
+    try {
+
+        let latestArticlesRes = await Article.find({}).populate('creator', 'username')
+
+        res.json(latestArticlesRes)
+
     } catch (err) { res.status(500).json({ message: err.message }) }
 }
 
 
 
 module.exports = {
-    createArticle
+    createArticle,
+    getLatest
 }
