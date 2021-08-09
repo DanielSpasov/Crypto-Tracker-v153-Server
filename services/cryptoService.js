@@ -42,7 +42,7 @@ const getWatchlist = async (req, res) => {
         if (!req.query.userID) return res.status(401).json({ message: 'Invalid user ID' })
         let user = await User.findById(req.query.userID)
 
-        if (user.watchlist.length === 0) return res.status(418).json({ message: 'You have no cryptocurrencies in your watchlist' })
+        if (user.watchlist.length === 0) return res.status(404).json({ message: 'You have no cryptocurrencies in your watchlist' })
 
         let watchlistData = await axios
             .get(`https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=${user.watchlist.join(',')}`, {
