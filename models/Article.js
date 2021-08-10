@@ -4,14 +4,15 @@ const articleSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
-        minLength: 8
+        minLength: 8,
+        maxLength: 72
     },
-    paragraphs: [{
+    content: {
         type: String,
         required: true,
-        minLength: 16,
+        minLength: 30,
         maxLength: 300
-    }],
+    },
     image: {
         type: String,
         required: true,

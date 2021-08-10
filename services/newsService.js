@@ -18,20 +18,17 @@ const getArticle = async (req, res) => {
 const createArticle = async (req, res) => {
     try {
 
-        const { title, paragraphs, image, userID } = req.body
+        const { title, content, image, userID } = req.body
 
         if (title.length < 8) return res.status(400).json({ message: 'Title must be at least 8 symbols long.' })
-        if (title.length > 32) return res.status(400).json({ message: 'Title cannot be more than 32 symbols long.' })
+        if (title.length > 72) return res.status(400).json({ message: 'Title cannot be more than 72 symbols long.' })
 
-        if (paragraphs.length > 20) return res.status(400).json({ message: 'You cannot have more than 20 paragraphs on one Article.' })
-        for(let p of paragraphs) {
-            if(p.length < 16) return res.status(400).json({ message: 'A paragraph must be at least 16 symbols long.' })
-            if(p.length > 300) return res.status(400).json({ message: 'A paragraph cannot be more than 300 symbols long.' })
-        }
+        if (content.length < 30) return res.status(400).json({ message: 'Content must be at least 30 symbols long.' })
+        if (content.length > 300) return res.status(400).json({ message: 'Content cannot be more than 300 symbols long.' })
 
         let article = new Article({
             title,
-            paragraphs,
+            content,
             image,
             creator: userID,
             dateCreated: new Date()
