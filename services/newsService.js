@@ -29,11 +29,12 @@ const createArticle = async (req, res) => {
 const getLatest = async (req, res) => {
     try {
 
-        let latestArticlesRes = await Article
+        let latestArticles = await Article
             .find({})
             .populate('creator', 'username')
 
-        res.json(latestArticlesRes)
+        latestArticles.sort((a, b) => b.dateCreated - a.dateCreated)
+        res.json(latestArticles)
 
     } catch (err) { res.status(500).json({ message: err.message }) }
 }
