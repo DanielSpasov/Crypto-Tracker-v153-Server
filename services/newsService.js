@@ -10,7 +10,7 @@ const getArticle = async (req, res) => {
             .findById(req.query.id)
             .populate('creator', 'username')
 
-        res.json(article)
+        res.status(200).json(article)
 
     } catch (err) { res.status(500).json({ message: err.message }) }
 }
@@ -20,11 +20,27 @@ const createArticle = async (req, res) => {
 
         const { title, content, image, userID } = req.body
 
-        if (title.length < 8) return res.status(400).json({ message: 'Title must be at least 8 symbols long.' })
-        if (title.length > 72) return res.status(400).json({ message: 'Title cannot be more than 72 symbols long.' })
+        if (title.length < 8) {
+            return res
+                .status(400)
+                .json({ message: 'Title must be at least 8 symbols long.' })
+        }
+        if (title.length > 72) {
+            return res
+                .status(400)
+                .json({ message: 'Title cannot be more than 72 symbols long.' })
+        }
 
-        if (content.length < 30) return res.status(400).json({ message: 'Content must be at least 30 symbols long.' })
-        if (content.length > 300) return res.status(400).json({ message: 'Content cannot be more than 300 symbols long.' })
+        if (content.length < 30) {
+            return res
+                .status(400)
+                .json({ message: 'Content must be at least 30 symbols long.' })
+        }
+        if (content.length > 300) {
+            return res
+                .status(400)
+                .json({ message: 'Content cannot be more than 300 symbols long.' })
+        }
 
         let article = new Article({
             title,
@@ -39,7 +55,7 @@ const createArticle = async (req, res) => {
         user.createdArticles.push(article._id)
         user.save()
 
-        res.json({ message: 'Article Created' })
+        res.status(200).json({ message: 'Article Created' })
 
     } catch (err) { res.status(500).json({ message: err.message }) }
 }
@@ -52,7 +68,7 @@ const getLatest = async (req, res) => {
             .populate('creator', 'username')
 
         latestArticles.sort((a, b) => b.dateCreated - a.dateCreated)
-        res.json(latestArticles)
+        res.status(200).json(latestArticles)
 
     } catch (err) { res.status(500).json({ message: err.message }) }
 }

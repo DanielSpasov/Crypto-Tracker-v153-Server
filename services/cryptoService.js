@@ -5,17 +5,21 @@ const User = require('../models/User')
 
 
 const getOne = async (req, res) => {
-    let cryptoData = await axios.get(`https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=${req.query.crypto}`, {
-        headers: { 'X-CMC_PRO_API_KEY': process.env.API_KEY }
-    })
-    res.json(cryptoData.data.data)
+    try {
+
+        let cryptoData = await axios.get(`https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=${req.query.crypto}`, {
+            headers: { 'X-CMC_PRO_API_KEY': process.env.API_KEY }
+        })
+        res.status(200).json(cryptoData.data.data)
+        
+    } catch (err) { res.status(500).json({ message: err.message }) }
 }
 
 const getLatest = async (req, res) => {
     let cryptoData = await axios.get(`https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest`, {
         headers: { 'X-CMC_PRO_API_KEY': process.env.API_KEY }
     })
-    res.json(cryptoData.data.data)
+    res.status(200).json(cryptoData.data.data)
 }
 
 const editWatchlist = async (req, res) => {
@@ -26,11 +30,11 @@ const editWatchlist = async (req, res) => {
         if (user.watchlist.includes(req.body.crypto)) {
             user.watchlist.splice(user.watchlist.indexOf(req.body.crypto), 1)
             user.save()
-            res.json({ email: user.email, username: user.username, id: user._id, watchlist: user.watchlist })
+            res.status(200).json({ email: user.email, username: user.username, id: user._id, watchlist: user.watchlist })
         } else {
             user.watchlist.push(req.body.crypto)
             user.save()
-            res.json({ email: user.email, username: user.username, id: user._id, watchlist: user.watchlist })
+            res.status(200).json({ email: user.email, username: user.username, id: user._id, watchlist: user.watchlist })
         }
 
     } catch (err) { res.status(500).json({ message: err.message }) }
@@ -54,7 +58,7 @@ const getWatchlist = async (req, res) => {
             output.push(watchlistData.data.data[i])
         }
 
-        res.json(output)
+        res.status(200).json(output)
 
     } catch (err) { res.status(500).json({ message: err.message }) }
 }
@@ -78,7 +82,7 @@ const searchLatest = async (req, res) => {
             output.push(cryptoData.data.data[key])
         }
 
-        res.json(output)
+        res.status(200).json(output)
 
     } catch (err) {
         if (err.message === 'Request failed with status code 400') {
@@ -116,7 +120,7 @@ const searchWatchlist = async (req, res) => {
             output.push(cryptoData.data.data[key])
         }
 
-        res.json(output)
+        res.status(200).json(output)
 
     } catch (err) { res.status(500).json({ message: err.message }) }
 }

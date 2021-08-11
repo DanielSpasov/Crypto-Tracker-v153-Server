@@ -1,5 +1,7 @@
 const mongoose = require('mongoose')
 
+
+
 const articleSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -27,5 +29,7 @@ const articleSchema = new mongoose.Schema({
         required: true
     }
 })
+
+
 
 module.exports = mongoose.model('Article', articleSchema)

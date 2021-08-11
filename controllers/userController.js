@@ -9,4 +9,6 @@ router.post('/sign-in', (req, res) => userService.signIn(req, res))
 
 router.get('/', (req, res) => userService.getOne(req, res))
 
+
+
 module.exports = router

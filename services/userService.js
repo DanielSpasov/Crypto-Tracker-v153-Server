@@ -26,7 +26,7 @@ const signUp = async(req, res) => {
         const newUser = new User({ email, password: passwordHash, username })
         await newUser.save()
 
-        res.json('Successful registration.')
+        res.status(200).json('Successful registration.')
 
     } catch (err) { res.status(500).json({ message: err.message }) }
 }
@@ -46,7 +46,7 @@ const signIn = async(req, res) => {
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET)
 
-        res.json({ token: token, _id: user._id })
+        res.status(200).json({ token: token, _id: user._id })
 
     } catch (err) { res.status(500).json({ message: err.message }) }
 }
@@ -58,7 +58,7 @@ const getOne = async(req, res) => {
         if (!userID) return res.status(401).json({ message: 'Invalid user ID' })
 
         let user = await User.findById(userID)
-        res.json({ email: user.email, username: user.username, _id: user._id, watchlist: user.watchlist })
+        res.status(200).json({ email: user.email, username: user.username, _id: user._id, watchlist: user.watchlist })
 
     } catch (err) { res.status(500).json({ message: err.message }) }
 }
