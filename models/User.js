@@ -15,6 +15,7 @@ const userSchema = new mongoose.Schema({
     },
     username: {
         type: String,
+        minLength: 6,
         unique: true,
     },
     watchlist: {
