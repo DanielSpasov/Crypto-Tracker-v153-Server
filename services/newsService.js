@@ -85,11 +85,24 @@ const deleteArticle = async (req, res) => {
     } catch (err) { res.status(500).json({ message: err.message }) }
 }
 
+const editArticle = async (req, res) => {
+    try {
+
+        let article = await Article.findById(req.params.id)
+        if (article.creator != req.headers.userid) return res.status(401).json('You don\'t have permission to delete this article')
+
+        await Article.findByIdAndUpdate(req.params.id, req.body)
+        res.status(200).json({ message: 'Article Edited Successfully' })
+
+    } catch (err) { res.status(500).json({ message: err.message }) }
+}
+
 
 
 module.exports = {
     getArticle,
     createArticle,
     getLatest,
-    deleteArticle
+    deleteArticle,
+    editArticle
 }

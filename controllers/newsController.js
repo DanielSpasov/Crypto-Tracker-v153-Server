@@ -10,6 +10,8 @@ router.post('/createArticle', (req, res) => newsService.createArticle(req, res))
 
 router.delete('/:id', (req, res) => newsService.deleteArticle(req, res))
 
+router.patch('/:id', (req, res) => newsService.editArticle(req, res))
+
 router.get('/:id', (req, res) => newsService.getArticle(req, res))
 
 
