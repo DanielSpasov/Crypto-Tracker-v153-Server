@@ -7,7 +7,7 @@ const getArticle = async (req, res) => {
     try {
 
         let article = await Article
-            .findById(req.query.id)
+            .findById(req.params.id)
             .populate('creator', 'username')
 
         res.status(200).json(article)
@@ -73,10 +73,23 @@ const getLatest = async (req, res) => {
     } catch (err) { res.status(500).json({ message: err.message }) }
 }
 
+const deleteArticle = async (req, res) => {
+    try {
+
+        let article = await Article.findById(req.params.id)
+        if (article.creator != req.headers.userid) return res.status(401).json('You don\'t have permission to delete this article')
+
+        await Article.findByIdAndDelete(req.params.id)
+        res.status(200).json({ message: 'Article Deleted' })
+
+    } catch (err) { res.status(500).json({ message: err.message }) }
+}
+
 
 
 module.exports = {
     getArticle,
     createArticle,
-    getLatest
+    getLatest,
+    deleteArticle
 }
