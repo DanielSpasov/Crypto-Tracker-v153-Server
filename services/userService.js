@@ -46,7 +46,7 @@ const signIn = async (req, res) => {
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET)
 
-        res.status(200).json({ token: token, _id: user._id })
+        res.status(200).json({ token: token, _id: user._id, username: user.username })
 
     } catch (err) { res.status(500).json({ message: err.message }) }
 }
