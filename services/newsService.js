@@ -88,6 +88,12 @@ const deleteArticle = async (req, res) => {
 const editArticle = async (req, res) => {
     try {
 
+        if (req.body.title.length < 8) return res.status(400).json({ message: 'Article title must be at least 8 symbols long' })
+        if (req.body.title.length > 72) return res.status(400).json({ message: 'Article title cannot be more than 72 symbols long' })
+
+        if (req.body.content.length < 30) return res.status(400).json({ message: 'Article content must be at least 30 symbols long' })
+        if (req.body.content.length > 300) return res.status(400).json({ message: 'Article content cannot be more than 300 symbols long' })
+
         let article = await Article.findById(req.params.id)
         if (article.creator != req.headers.userid) return res.status(401).json('You don\'t have permission to delete this article')
 
