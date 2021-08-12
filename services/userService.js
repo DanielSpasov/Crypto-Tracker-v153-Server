@@ -54,7 +54,7 @@ const signIn = async (req, res) => {
 const getOne = async (req, res) => {
     try {
 
-        let userID = req.header('user-id')
+        let userID = req.params.id
         if (!userID) return res.status(401).json({ message: 'Invalid user ID' })
 
         let user = await User
@@ -75,20 +75,12 @@ const getOne = async (req, res) => {
 const changeUsername = async (req, res) => {
     try {
 
-        const { accountID, userID, newUsername } = req.body
+        const { username } = req.body
+        const userID = req.params.id
 
-        let account = await User
-            .findById(accountID)
-            .populate('createdArticles', 'title')
-
-        if (accountID !== userID) return res.status(403).json({ message: 'You don\'t have permission to change other people\'s usernames' })
-        if (newUsername.length < 6) return res.status(400).json({ message: 'New username must be at least 6 symbols long' })
-        if (account.username === newUsername) return res.status(400).json({ message: 'Your new username cannot be your old username' })
-
-        account.username = newUsername
-        account.save()
-
-        res.status(200).json(account)
+        await User.findByIdAndUpdate(userID, { username: username })
+    
+        getOne(req, res)
 
     } catch (err) { res.status(500).json({ message: err.message }) }
 }
