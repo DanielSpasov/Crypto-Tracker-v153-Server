@@ -74,6 +74,11 @@ const deleteArticle = async (req, res) => {
         let article = await Article.findById(req.params.id)
         if (article.creator != req.headers.userid) return res.status(401).json('You don\'t have permission to delete this article')
 
+        let creator = await User.findById(req.headers.userid)
+        let aIndex = creator.createdArticles.indexOf(article._id)
+        creator.createdArticles.splice(aIndex, 1)
+        creator.save()
+
         await Article.findByIdAndDelete(req.params.id)
 
         const format = article.image.split('.')[1]
@@ -116,7 +121,7 @@ const getImage = async (req, res) => {
 
 const uploadImage = async (req, res, next) => {
     try {
-        if(!req.file) return res.status(400).json({message: 'Image is required'})
+        if(!req.file) res.status(400).json({message: 'Image is required'})
         next()
     } catch (err) { res.status(500).json({ message: err.message }) }
 }
