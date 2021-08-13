@@ -40,7 +40,7 @@ const createArticle = async (req, res) => {
         article.image = `http://localhost:4153/news/image/${article._id}.${imageInfo.format}`
         article.save()
 
-        fs.rename(
+        fs.renameSync(
             `D:/Code/Crypto-Tracker-v153/server/uploads/article_${imageInfo.name}`,
             `D:/Code/Crypto-Tracker-v153/server/uploads/article_${article._id}.${imageInfo.format}`,
             () => { }
@@ -82,7 +82,7 @@ const deleteArticle = async (req, res) => {
         await Article.findByIdAndDelete(req.params.id)
 
         const format = article.image.split('.')[1]
-        fs.unlink(`D:/Code/Crypto-Tracker-v153/server/uploads/article_${article._id}.${format}`, () => {})
+        fs.unlinkSync(`D:/Code/Crypto-Tracker-v153/server/uploads/article_${article._id}.${format}`, () => {})
 
         res.status(200).json({ message: 'Article Deleted' })
 
