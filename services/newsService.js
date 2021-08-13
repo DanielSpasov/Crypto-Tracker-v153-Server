@@ -116,7 +116,7 @@ const getImage = async (req, res) => {
 
 const uploadImage = async (req, res, next) => {
     try {
-        if(!req.file) res.status(400).json({message: 'Image is required'})
+        if(!req.file) return res.status(400).json({message: 'Image is required'})
         next()
     } catch (err) { res.status(500).json({ message: err.message }) }
 }
