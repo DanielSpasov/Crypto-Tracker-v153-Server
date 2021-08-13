@@ -78,8 +78,10 @@ const changeUsername = async (req, res) => {
         const { username } = req.body
         const userID = req.params.id
 
+        if (!username) return res.status(400).json({ message: 'Username must be at least 6 symbols' })
+
         await User.findByIdAndUpdate(userID, { username: username })
-    
+
         getOne(req, res)
 
     } catch (err) { res.status(500).json({ message: err.message }) }
