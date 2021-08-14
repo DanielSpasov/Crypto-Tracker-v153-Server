@@ -34,19 +34,24 @@ const signUp = async (req, res) => {
 const signIn = async (req, res) => {
     try {
 
-        let { email, password } = req.body
+        const { email, password } = req.body
 
-        if (!email || !password) return res.status(400).json({ message: 'Not all fields have been entered.' })
+        if (!email || !password) return res.status(400).json({ message: 'Not all fields have been entered' })
 
         const user = await User.findOne({ email: email })
-        if (!user) return res.status(400).json({ message: 'No account with this email has been registered.' })
+        if (!user) return res.status(400).json({ message: 'No account with this email has been registered' })
 
         const isMatch = await bcrypt.compare(password, user.password)
-        if (!isMatch) return res.status(400).json({ message: 'Invalid credentials.' })
+        if (!isMatch) return res.status(400).json({ message: 'Wrong Username or Password' })
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET)
 
-        res.status(200).json({ token: token, _id: user._id, username: user.username })
+        res.status(200).json({
+            token: token,
+            _id: user._id,
+            username: user.username,
+            email: user.email
+        })
 
     } catch (err) { res.status(500).json({ message: err.message }) }
 }
@@ -78,7 +83,11 @@ const changeUsername = async (req, res) => {
         const { username } = req.body
         const userID = req.params.id
 
-        if (!username) return res.status(400).json({ message: 'Username must be at least 6 symbols' })
+        if (!username) return res.status(400).json({ message: 'Username is required' })
+        if (username.length < 6) return res.status(400).json({ message: 'Username must be at least 6 symbols' })
+
+        const usernameExists = Boolean(await User.findOne({ username: username }))
+        if(usernameExists) return res.status(400).json({ message: 'This username is taken by another user' })
 
         await User.findByIdAndUpdate(userID, { username: username })
 
