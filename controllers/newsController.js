@@ -17,6 +17,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage })
 
 
+router.get('/search', (req, res) => newsService.searchNews(req, res))
 router.get('/getLatest', (req, res) => newsService.getLatest(req, res))
 router.get('/image/:id', (req, res) => newsService.getImage(req, res))
 router.get('/:id', (req, res) => newsService.getArticle(req, res))

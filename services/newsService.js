@@ -82,7 +82,7 @@ const deleteArticle = async (req, res) => {
         await Article.findByIdAndDelete(req.params.id)
 
         const format = article.image.split('.')[1]
-        fs.unlinkSync(`D:/Code/Crypto-Tracker-v153/server/uploads/article_${article._id}.${format}`, () => {})
+        fs.unlinkSync(`D:/Code/Crypto-Tracker-v153/server/uploads/article_${article._id}.${format}`, () => { })
 
         res.status(200).json({ message: 'Article Deleted' })
 
@@ -122,8 +122,21 @@ const getImage = async (req, res) => {
 
 const uploadImage = async (req, res, next) => {
     try {
-        if(!req.file) res.status(400).json({message: 'Image is required'})
+        if (!req.file) res.status(400).json({ message: 'Image is required' })
         next()
+    } catch (err) { res.status(500).json({ message: err.message }) }
+}
+
+const searchNews = async (req, res) => {
+    try {
+
+        if (!req.query.article) return getLatest(req, res)
+
+        const articles = await Article.aggregate([{ $search: { text: { query: req.query.article, path: 'title' } } }])
+        await User.populate(articles, { path: 'creator' })
+        
+        res.status(200).json(articles)
+
     } catch (err) { res.status(500).json({ message: err.message }) }
 }
 
@@ -136,5 +149,6 @@ module.exports = {
     deleteArticle,
     editArticle,
     getImage,
-    uploadImage
+    uploadImage,
+    searchNews
 }
