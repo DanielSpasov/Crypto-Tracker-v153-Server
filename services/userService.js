@@ -77,30 +77,10 @@ const getOne = async (req, res) => {
     } catch (err) { res.status(500).json({ message: err.message }) }
 }
 
-const changeUsername = async (req, res) => {
-    try {
-
-        const { username } = req.body
-        const userID = req.params.id
-
-        if (!username) return res.status(400).json({ message: 'Username is required' })
-        if (username.length < 6) return res.status(400).json({ message: 'Username must be at least 6 symbols' })
-
-        const usernameExists = Boolean(await User.findOne({ username: username }))
-        if(usernameExists) return res.status(400).json({ message: 'This username is taken by another user' })
-
-        await User.findByIdAndUpdate(userID, { username: username })
-
-        getOne(req, res)
-
-    } catch (err) { res.status(500).json({ message: err.message }) }
-}
-
 
 
 module.exports = {
     getOne,
     signUp,
-    signIn,
-    changeUsername
+    signIn
 }
