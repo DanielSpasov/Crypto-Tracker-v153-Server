@@ -82,7 +82,7 @@ const deleteArticle = async (req, res) => {
         await Article.findByIdAndDelete(req.params.id)
 
         const format = article.image.split('.')[1]
-        fs.unlinkSync(`D:/Code/Crypto-Tracker-v153/server/uploads/article_${article._id}.${format}`, () => { })
+        fs.unlink(`D:/Code/Crypto-Tracker-v153/server/uploads/article_${article._id}.${format}`, () => { })
 
         res.status(200).json({ message: 'Article Deleted' })
 
