@@ -1,20 +1,11 @@
-const multer = require('multer')
-
 const router = require('express').Router()
+
+const { upload } = require('../config/multer')
 
 const newsService = require('../services/newsService')
 
 
-const storage = multer.diskStorage({
-    destination: (req, file, callblack) => {
-        callblack(null, 'uploads')
-    },
-    filename: (req, file, callback) => {
-        callback(null, `article_${file.originalname}`)
-    }
-})
 
-const upload = multer({ storage })
 
 
 router.get('/search', (req, res) => newsService.searchNews(req, res))
